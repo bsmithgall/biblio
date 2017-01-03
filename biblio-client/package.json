@@ -1,0 +1,33 @@
+{
+  "name": "biblio-client",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-as-promised": "^6.0.0",
+    "enzyme": "^2.7.0",
+    "mocha": "^3.2.0",
+    "react-addons-test-utils": "^15.4.1",
+    "react-scripts": "0.8.4",
+    "sinon": "^1.17.7",
+    "sinon-chai": "^2.8.0"
+  },
+  "dependencies": {
+    "immutable": "^3.8.1",
+    "react": "^15.4.1",
+    "react-dnd": "^2.1.4",
+    "react-dnd-html5-backend": "^2.1.2",
+    "react-dom": "^15.4.1",
+    "react-redux": "^5.0.1",
+    "redux": "^3.6.0",
+    "redux-thunk": "^2.1.0"
+  },
+  "scripts": {
+    "start": "npm run watch-css & react-scripts start",
+    "build": "npm run build-css && react-scripts build",
+    "test": "mocha --require ./test/mocha.setup.js --compilers babel-core/register --recursive ./test/**/*.spec.js",
+    "eject": "react-scripts eject",
+    "build-css": "node-sass src/styles/app.scss ./public/app.css",
+    "watch-css": "node-sass src/styles/app.scss -w ./public/app.css"
+  }
+}

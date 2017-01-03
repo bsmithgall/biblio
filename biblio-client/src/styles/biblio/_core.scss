@@ -1,0 +1,11 @@
+@import 'components/shelf';
+@import 'components/work';
+
+body {
+  margin: 0;
+  height: 100%;
+}
+
+#root, .bb-app-root {
+  height: 100%;
+}

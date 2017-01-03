@@ -1,0 +1,69 @@
+@mixin grid-item-columns($columns) {
+  width: (100% / 12) * $columns;
+}
+
+.bb-shelf-container {
+  $base-background-color: white !default;
+  $dark-gray: #333 !default;
+  $light-gray: #DDD !default;
+  $medium-screen: 40em !default;
+  $large-screen: 53.75em !default;
+  $base-font-color: $dark-gray !default;
+  $grid-items-background: $base-background-color;
+  $grid-item-background: $base-background-color;
+  $grid-item-border: 1px solid transparentize($base-font-color, 0.8);
+  $grid-item-columns: 4;
+  $grid-item-big-columns: 8;
+  $grid-item-color: $base-font-color;
+
+  @include clearfix;
+  position: relative;
+
+  @include media($large-screen) {
+    height: calc(100% - #{$navigation-height});
+  }
+
+  .bb-shelf {
+    background: $grid-item-background;
+    border-bottom: $grid-item-border;
+    border-right: $grid-item-border;
+    float: left;
+    outline: none;
+    overflow: hidden;
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+    height: 100%;
+    width: 100%;
+    padding: 0;
+
+    @include media($large-screen) {
+      @include grid-item-columns($grid-item-columns);
+    }
+  }
+
+  // removes the outer borders by using the background color.
+  .bb-shelf-bottom-cover {
+    background: $grid-items-background;
+    bottom: 0;
+    height: 3px;
+    position: absolute;
+    width: 100%;
+  }
+
+  .bb-shelf-right-cover {
+    background: $grid-items-background;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    width: 4px;
+  }
+
+  .bb-shelf-title {
+    text-align: center;
+    border-bottom: $grid-item-border;
+
+    h1 {
+      margin: .25em 0;
+    }
+  }
+}
