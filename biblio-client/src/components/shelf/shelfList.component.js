@@ -5,7 +5,7 @@ import { DropTarget } from 'react-dnd';
 import * as types from '../../constants/dndTypes'
 import * as sizes from '../../constants/shelfSizes'
 
-import Work from '../works/work.component.js'
+import Work from '../works/work.component'
 
 function getPlaceholderIndex(y, scrollY) {
   // shift placeholder if y position more than card height / 2

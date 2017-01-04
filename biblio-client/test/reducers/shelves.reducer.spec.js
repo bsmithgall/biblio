@@ -3,7 +3,7 @@ import * as types from '../../src/constants'
 import { shelvesState } from '../../src/constants/initialState'
 
 describe('Reducers', function() {
-  var initState
+  var initState, newWork
   describe('shelf reducer', function() {
 
     beforeEach(function() {
@@ -25,7 +25,7 @@ describe('Reducers', function() {
         const newState = shelfReducer(
           initState, {
             type: types.MOVE_WORK,
-            payload: { workId: 1, lastX: 0, lastY: 0, nextX: 1, nextY: 0 }
+            payload: { workId: 1, lastShelf: 0, lastWorkPos: 0, nextShelf: 1, nextWorkPos: 0 }
           }
         )
 
@@ -37,12 +37,43 @@ describe('Reducers', function() {
         const newState = shelfReducer(
           initState, {
             type: types.MOVE_WORK,
-            payload: { workId: 1, lastX: 0, lastY: 0, nextX: 0, nextY: 1 }
+            payload: { workId: 1, lastShelf: 0, lastWorkPos: 0, nextShelf: 0, nextWorkPos: 1 }
           }
-          )
+        )
 
         expect(newState[0].works[0].title).to.eq('bar')
         expect(newState[0].works[1].title).to.eq('foo')
+      })
+    })
+
+    describe('action: ADD_WORK', function() {
+      beforeEach(function() {
+        newWork = {title: 'baz'}
+      })
+
+      it('should add properly to the first shelf', function() {
+        const newState = shelfReducer(
+          initState, {
+            type: types.ADD_WORK,
+            payload: { work: newWork, shelfId: 0}
+          }
+        )
+
+        expect(newState[0].works.length).to.eq(3)
+        expect(newState[0].works[0].title).to.eq('baz')
+      })
+
+      it('should add properly to the second shelf', function() {
+        const newState = shelfReducer(
+          initState, {
+            type: types.ADD_WORK,
+            payload: { work: newWork, shelfId: 1}
+          }
+        )
+
+        expect(newState[0].works.length).to.eq(2)
+        expect(newState[1].works.length).to.eq(1)
+        expect(newState[1].works[0].title).to.eq('baz')
       })
     })
   })

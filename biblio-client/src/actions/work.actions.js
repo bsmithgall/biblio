@@ -1,14 +1,24 @@
 import * as types from '../constants'
 
-export function moveWork(workId, lastX, lastY, nextX, nextY) {
+export function addWork(work, shelfId) {
+  return {
+    type: types.ADD_WORK,
+    payload: {
+      work: work,
+      shelfId: shelfId
+    }
+  }
+}
+
+export function moveWork(workId, lastShelf, lastWorkPos, nextShelf, nextWorkPos) {
   return {
     type: types.MOVE_WORK,
     payload: {
       workId: workId,
-      lastX: lastX,
-      lastY: lastY,
-      nextX: nextX,
-      nextY: nextY
+      lastShelf: lastShelf,
+      lastWorkPos: lastWorkPos,
+      nextShelf: nextShelf,
+      nextWorkPos: nextWorkPos
     }
   }
 }

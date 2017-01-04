@@ -4,8 +4,7 @@ import Shelf from './shelf/shelf.component'
 
 export default class Biblio extends React.Component {
   render() {
-    const shelves = this.props.shelves
-    const moveWork = this.props.moveWork
+    const { shelves, moveWork, addWork } = this.props
 
     return (
       <div className="bb-biblio bb-shelf-container">
@@ -16,6 +15,7 @@ export default class Biblio extends React.Component {
               title={shelf.title}
               works={shelf.works}
               shelfNumber={idx}
+              addWork={addWork}
               moveWork={moveWork}
             />
           )

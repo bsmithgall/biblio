@@ -14,9 +14,10 @@ const mapStateToProps = function(state) {
 
 const mapDispatchToProps = function(dispatch) {
   return {
-    moveWork: function(workId, lastX, lastY, nextX, nextY) {
-      dispatch(WorkActions.moveWork(workId, lastX, lastY, nextX, nextY))
-    }
+    moveWork: function(workId, lastShelf, lastWork, nextShelf, nextWork) {
+      dispatch(WorkActions.moveWork(workId, lastShelf, lastWork, nextShelf, nextWork))
+    },
+    addWork: function(work, shelf) { dispatch(WorkActions.addWork(work, shelf)) }
   }
 }
 
