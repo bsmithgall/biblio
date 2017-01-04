@@ -76,5 +76,19 @@ describe('Reducers', function() {
         expect(newState[1].works[0].title).to.eq('baz')
       })
     })
+
+    describe('action: DELETE_WORK', function() {
+      it('should properly delete a work', function() {
+        const newState = shelfReducer(
+          initState, {
+            type: types.DELETE_WORK,
+            payload: { workId: 1, shelfId: 0 }
+          }
+        )
+
+        expect(newState[0].works.length).to.eq(1)
+        expect(newState[0].works[0].title).to.eq('bar')
+      })
+    })
   })
 })

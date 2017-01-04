@@ -4,20 +4,19 @@ import shortid from 'shortid'
 import * as types from '../constants'
 
 const shelves = function(state = shelvesState, action) {
-  let newState
   switch(action.type) {
-    case types.ADD_WORK:
-      newState = [...state]
+    case types.ADD_WORK: {
+      const newState = [...state]
       const { work, shelfId } = action.payload
 
       work.id = shortid.generate()
-      debugger;
 
       newState[shelfId].works.unshift(work)
       return newState
+    }
 
-    case types.MOVE_WORK:
-      newState = [...state]
+    case types.MOVE_WORK: {
+      const newState = [...state]
       const { lastShelf, lastWorkPos, nextShelf, nextWorkPos } = action.payload;
 
       // no X move: moving a work up/down in an existing shelf
@@ -29,9 +28,22 @@ const shelves = function(state = shelvesState, action) {
       }
 
       return newState
+    }
 
-    default:
+    case types.DELETE_WORK: {
+      const newState = [...state]
+
+      const { workId, shelfId } = action.payload
+      const shelfWorksIds = newState[shelfId].works.map(function(e) { return e.id })
+
+      newState[shelfId].works.splice(shelfWorksIds.indexOf(workId), 1)
+
+      return newState
+    }
+
+    default: {
       return state
+    }
   }
 }
 

@@ -1,53 +1,17 @@
 import React from 'react'
-import { findDOMNode } from 'react-dom'
 
-import { DragSource } from 'react-dnd'
-
-import * as types from '../../constants/dndTypes'
-
-function collectDragSource(connectDragSource, monitor) {
-  return {
-    connectDragSource: connectDragSource.dragSource(),
-    connectDragPreview: connectDragSource.dragPreview(),
-    isDragging: monitor.isDragging()
-  };
-}
-
-const workSource = {
-  beginDrag(props, _, component) {
-    const { clientWidth, clientHeight } = findDOMNode(component);
-
-    return {
-      id: props.id,
-      title: props.tite,
-      shelfNumber: props.shelfNumber,
-      workNumber: props.workNumber,
-      clientWidth: clientWidth,
-      clientHeight: clientHeight
-    }
-  },
-  isDragging(props, monitor) {
-    const isDragging = props.id && props.id === monitor.getItem().id;
-    return isDragging;
+export default class Work extends React.Component {
+  constructor(props) {
+    super(props)
+    this.clickDelete = this.clickDelete.bind(this)
   }
-};
 
-const OPTIONS = {
-  arePropsEqual: function arePropsEqual(props, otherProps) {
-    let isEqual = true;
-    if (props.id === otherProps.id &&
-        props.shelfNumber === otherProps.shelfNumber &&
-        props.workNumber === otherProps.workNumber
-       ) {
-      isEqual = true;
-    } else {
-      isEqual = false;
+  clickDelete(event) {
+    if(confirm('Are you sure you want to remove ' + this.props.title + 'from your biblio?')) {
+      this.props.deleteWork(this.props.id, this.props.shelfNumber)
     }
-    return isEqual;
   }
-};
 
-class Work extends React.Component {
   render() {
     return this.props.connectDragSource(
       <div
@@ -58,9 +22,10 @@ class Work extends React.Component {
           <h1>{this.props.title}</h1>
           <p>{this.props.author}</p>
         </div>
+        <div className="bb-work-delete" onClick={this.clickDelete}>
+          🗑
+        </div>
       </div>
     )
   }
 }
-
-export default DragSource(types.WORK, workSource, collectDragSource, OPTIONS)(Work)

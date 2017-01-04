@@ -13,6 +13,7 @@
   $grid-item-color: $base-font-color;
 
   @include clearfix;
+  height: 100%;
 
   @include media($large-screen) {
     height: calc(100% - #{$navigation-height});

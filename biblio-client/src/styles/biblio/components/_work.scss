@@ -12,6 +12,7 @@
   $bb-work-detail-color: transparentize($bb-work-color, 0.5);
   $bb-work-image-vert-alignment: top;
 
+  @include outer-container;
   border-bottom: 1px solid transparentize($bb-work-color, 0.9);
   display: table;
   padding: 1em;
@@ -66,6 +67,17 @@
       color: $bb-work-detail-color;
       font-size: 0.9em;
       font-style: italic;
+    }
+  }
+
+  .bb-work-delete {
+    padding: 0.5rem;
+    border-radius: 5px;
+    margin-top: 10px;
+
+    &:focus,
+    &:hover {
+      background-color: transparentize($bb-work-color, 0.75);
     }
   }
 }

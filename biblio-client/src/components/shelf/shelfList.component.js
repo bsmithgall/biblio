@@ -5,7 +5,7 @@ import { DropTarget } from 'react-dnd';
 import * as types from '../../constants/dndTypes'
 import * as sizes from '../../constants/shelfSizes'
 
-import Work from '../works/work.component'
+import WorkContainer from '../../containers/work.container'
 
 function getPlaceholderIndex(y, scrollY) {
   // shift placeholder if y position more than card height / 2
@@ -81,7 +81,7 @@ class ShelfList extends React.Component {
       <div className="bb-shelf-list">
         {works.map(function(work, idx) {
           return (
-            <Work
+            <WorkContainer
               id={work.id}
               key={work.id}
               index={idx}
