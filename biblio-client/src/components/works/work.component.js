@@ -20,8 +20,8 @@ const workSource = {
     return {
       id: props.id,
       title: props.tite,
-      x: props.x,
-      y: props.y,
+      shelfNumber: props.shelfNumber,
+      workNumber: props.workNumber,
       clientWidth: clientWidth,
       clientHeight: clientHeight
     }
@@ -36,8 +36,8 @@ const OPTIONS = {
   arePropsEqual: function arePropsEqual(props, otherProps) {
     let isEqual = true;
     if (props.id === otherProps.id &&
-        props.x === otherProps.x &&
-        props.y === otherProps.y
+        props.shelfNumber === otherProps.shelfNumber &&
+        props.workNumber === otherProps.workNumber
        ) {
       isEqual = true;
     } else {
@@ -56,7 +56,7 @@ class Work extends React.Component {
       >
         <div className="comment-content">
           <h1>{this.props.title}</h1>
-          <p>Foobar</p>
+          <p>{this.props.author}</p>
         </div>
       </div>
     )

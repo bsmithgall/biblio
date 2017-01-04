@@ -15,7 +15,7 @@ export default class Biblio extends React.Component {
               key={shelf.id}
               title={shelf.title}
               works={shelf.works}
-              x={idx}
+              shelfNumber={idx}
               moveWork={moveWork}
             />
           )
@@ -24,3 +24,4 @@ export default class Biblio extends React.Component {
     )
   }
 }
+
