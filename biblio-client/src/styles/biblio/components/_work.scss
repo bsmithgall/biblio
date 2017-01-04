@@ -1,55 +1,55 @@
-.comment {
+.bb-work {
   $base-border-radius: 3px !default;
   $base-spacing: 1.5em !default;
   $action-color: #477DCA !default;
   $dark-gray: #333 !default;
   $base-font-color: $dark-gray !default;
-  $comment-gutter: 1.4em;
-  $comment-image-padding: 0.7em;
-  $comment-image-width: 4em;
-  $comment-color: $base-font-color;
-  $comment-background: lighten($action-color, 15%);
-  $comment-detail-color: transparentize($comment-color, 0.5);
-  $comment-image-vert-alignment: top;
+  $bb-work-gutter: 1.4em;
+  $bb-work-image-padding: 0.7em;
+  $bb-work-image-width: 4em;
+  $bb-work-color: $base-font-color;
+  $bb-work-background: lighten($action-color, 15%);
+  $bb-work-detail-color: transparentize($bb-work-color, 0.5);
+  $bb-work-image-vert-alignment: top;
 
-  border-bottom: 1px solid transparentize($comment-color, 0.9);
+  border-bottom: 1px solid transparentize($bb-work-color, 0.9);
   display: table;
   padding: 1em;
   width: 100%;
 
   &:hover,
   &:focus {
-    background-color: transparentize($comment-color, 0.8);
+    background-color: transparentize($bb-work-color, 0.8);
     background-clip: border-box;
     cursor: pointer;
   }
 
-  .comment-image,
-  .comment-content {
+  .bb-work-image,
+  .bb-work-content {
     display: table-cell;
-    vertical-align: $comment-image-vert-alignment;
+    vertical-align: $bb-work-image-vert-alignment;
   }
 
-  .comment-image {
-    padding-right: $comment-gutter;
+  .bb-work-image {
+    padding-right: $bb-work-gutter;
 
     > img {
-      background: $comment-background;
+      background: $bb-work-background;
       border-radius: $base-border-radius;
       display: block;
       height: auto;
       max-width: none;
-      padding: $comment-image-padding;
-      width: $comment-image-width;
+      padding: $bb-work-image-padding;
+      width: $bb-work-image-width;
     }
 
-    .comment-reverse-order & {
+    .bb-work-reverse-order & {
       padding-left: 10px;
       padding-right: 0;
     }
   }
 
-  .comment-content {
+  .bb-work-content {
     width: 100%;
 
     h1 {
@@ -62,8 +62,8 @@
       margin-bottom: 0.5em;
     }
 
-    p.comment-detail {
-      color: $comment-detail-color;
+    p.bb-work-detail {
+      color: $bb-work-detail-color;
       font-size: 0.9em;
       font-style: italic;
     }

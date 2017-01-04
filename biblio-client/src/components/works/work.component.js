@@ -51,10 +51,10 @@ class Work extends React.Component {
   render() {
     return this.props.connectDragSource(
       <div
-        className="bb-work comment"
+        className="bb-work"
         id={this.props.id}
       >
-        <div className="comment-content">
+        <div className="bb-work-content">
           <h1>{this.props.title}</h1>
           <p>{this.props.author}</p>
         </div>
