@@ -7,7 +7,7 @@ export default class Work extends React.Component {
   }
 
   clickDelete(event) {
-    if(confirm('Are you sure you want to remove ' + this.props.title + 'from your biblio?')) {
+    if(confirm('Are you sure you want to remove ' + this.props.title + ' from your biblio?')) {
       this.props.deleteWork(this.props.id, this.props.shelfNumber)
     }
   }

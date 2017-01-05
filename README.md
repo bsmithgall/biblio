@@ -11,7 +11,7 @@ It's mostly a learning attempt, so it's made up of things I don't know very well
 The first version's featureset is going to be extremely limited: you will be able to add books to a list and move them around:
 
 + [x] Wire up a (mostly) functional drag-and-drop/not-as-good-as-trello style interface
-+ [ ] Add support for adding new "works"
++ [x] Add support for adding new "works"
 + [ ] Figure out an API contract between the front-end and the backend
 + [ ] Talk to either the [Google Books API](https://developers.google.com/books/) or a different one to get book metadata
 + [ ] Wire it all up
