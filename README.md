@@ -13,8 +13,11 @@ The first version's featureset is going to be extremely limited: you will be abl
 + [x] Wire up a (mostly) functional drag-and-drop/not-as-good-as-trello style interface
 + [x] Add support for adding new "works"
 + [ ] Figure out an API contract between the front-end and the backend
-+ [ ] Talk to either the [Google Books API](https://developers.google.com/books/) or a different one to get book metadata
+    + [x] Add/List
+    + [ ] Update/remove
++ [ ] Add tests
 + [ ] Wire it all up
++ [ ] Talk to either the [Google Books API](https://developers.google.com/books/) or a different one to get book metadata
 + [ ] Deploy it out
 
 More to come as this gets developed out.
