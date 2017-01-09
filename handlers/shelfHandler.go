@@ -14,7 +14,7 @@ import (
 	"models"
 )
 
-func ShelvesHandler(w http.ResponseWriter, r *http.Request) {
+func ShelfListHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
 
 	switch r.Method {

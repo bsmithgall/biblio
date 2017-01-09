@@ -1,6 +1,16 @@
+application: biblio
+version: 1
 runtime: go
 api_version: go1
 
 handlers:
-- url: /.*
+- url: /
+  static_files: client/build/index.html
+  upload: client/build/index.html
+- url: /app.css
+  static_files: client/build/app.css
+  upload: client/build/app.css
+- url: /static
+  static_dir: client/build/static
+- url: /api.*
   script: _go_app

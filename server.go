@@ -1,23 +1,21 @@
 package biblio
 
 import (
-	"fmt"
-	"net/http"
-
 	"github.com/gorilla/mux"
 	"handlers"
+	"net/http"
 )
 
 func init() {
 	r := mux.NewRouter()
-	r.HandleFunc("/", HomeHandler)
-	r.HandleFunc("/works", handlers.WorksHandler)
-	r.HandleFunc("/shelves", handlers.ShelvesHandler)
 
-	// The path "/" matches everything not matched by some other path.
+	// API Components
+	api := r.PathPrefix("/api/v1").Subrouter()
+	api.Path("/works").HandlerFunc(handlers.WorkListHandler)
+	api.Path("/works/{key}").HandlerFunc(handlers.WorkHandler)
+	api.Path("/shelves").HandlerFunc(handlers.ShelfListHandler)
+
+	// Register our mux router with http package, needed
+	// for app engine to see the routes
 	http.Handle("/", r)
-}
-
-func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "Hello, World!")
 }
