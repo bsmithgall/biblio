@@ -1,5 +1,7 @@
 import React from 'react'
 
+import Fetching from './fetching.component'
+
 export default class NavBar extends React.Component {
   render() {
     return (
@@ -16,6 +18,9 @@ export default class NavBar extends React.Component {
               <li className="nav-link"><a href="">Contact</a></li>
             </ul>
           </nav>
+          <div className="navigation-tools">
+            <Fetching isFetching={this.props.isFetching} />
+          </div>
         </div>
       </header>
     )

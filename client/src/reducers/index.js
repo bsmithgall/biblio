@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux'
-import works from './works.reducer'
-import shelves from './shelves.reducer'
+import shelf from './shelf.reducer'
+import biblio from './biblio.reducer'
 
 export default combineReducers({
-  shelves,
-  works
+  biblio,
+  shelves
 })

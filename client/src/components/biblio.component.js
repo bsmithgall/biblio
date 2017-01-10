@@ -8,13 +8,13 @@ export default class Biblio extends React.Component {
 
     return (
       <div className="bb-biblio bb-shelf-container">
-        {shelves.map(function(shelf, idx) {
+        {shelves.map(function(shelf) {
           return (
             <Shelf
               key={shelf.id}
               title={shelf.title}
               works={shelf.works}
-              shelfNumber={idx}
+              shelfNumber={shelf.id}
               addWork={addWork}
               moveWork={moveWork}
             />

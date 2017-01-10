@@ -1,25 +1,29 @@
-import * as types from '../constants'
+import * as constants from '../constants'
 
-export function addWork(work, shelfId) {
+export function fetchingShelves() {
+  return { type: constants.FETCHING }
+}
+
+export function receivedShelves(shelves) {
   return {
-    type: types.ADD_WORK,
+    type: constants.END_SHELF_FETCHING,
     payload: {
-      work: work,
-      shelfId: shelfId
+      shelves: shelves
     }
   }
 }
 
-export function moveWork(workId, lastShelf, lastWorkPos, nextShelf, nextWorkPos) {
-  return {
-    type: types.MOVE_WORK,
-    payload: {
-      workId: workId,
-      lastShelf: lastShelf,
-      lastWorkPos: lastWorkPos,
-      nextShelf: nextShelf,
-      nextWorkPos: nextWorkPos
-    }
+function fetchShelves(dispatch) {
+  return function(dispatch) {
+    dispatch(fetchingShelves())
+    return fetch(constants.API_ENDPOINT + '/shelves')
+      .then(function(response) { return response.json() })
+      .then(function(json) {
+        dispatch(receivedShelves(json))
+      })
   }
 }
 
+export function getShelves(dispatch) {
+  return dispatch(fetchShelves())
+}

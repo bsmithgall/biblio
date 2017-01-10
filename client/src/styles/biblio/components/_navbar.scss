@@ -4,7 +4,6 @@ header.navigation {
   $large-screen: 53.75em !default;
   $navigation-padding: 1em;
   $navigation-background: $color-primary;
-  $navigation-color: transparentize(white, 0.3);
   $navigation-color-hover: white;
   $navigation-nav-button-background: $color-link;
   $navigation-nav-button-background-hover: lighten($navigation-background, 10%);

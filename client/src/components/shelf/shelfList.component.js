@@ -22,19 +22,20 @@ function getPlaceholderIndex(y, scrollY) {
 const specs = {
   drop(props, monitor, component) {
     const { placeholderIndex } = component.state;
-    const lastShelf = monitor.getItem().shelfNumber;
-    const lastWork = monitor.getItem().workNumber;
+    const work = monitor.getItem().work
+    const lastShelf = work.shelfId;
     const nextShelf = props.shelfNumber;
-    let nextWork = placeholderIndex;
+    const lastWorkPosition = monitor.getItem().position;
+    let nextWorkPosition = placeholderIndex;
 
-    if (lastWork > nextWork) { // move top
-      nextWork += 1;
+    if (lastWorkPosition > nextWorkPosition) { // move top
+      nextWorkPosition += 1;
     } else if (lastShelf !== nextShelf) { // insert into another list
-      nextWork += 1;
+      nextWorkPosition += 1;
     }
 
-    if (lastShelf !== nextShelf || lastWork !== nextWork) {
-      props.moveWork(monitor.getItem().id, lastShelf, lastWork, nextShelf, nextWork);
+    if (lastShelf !== nextShelf || lastWorkPosition !== nextWorkPosition) {
+      props.moveWork(work, lastShelf, lastWorkPosition, nextShelf, nextWorkPosition);
     }
   },
   hover(props, monitor, component) {
@@ -84,12 +85,12 @@ class ShelfList extends React.Component {
             <WorkContainer
               id={work.id}
               key={work.id}
-              index={idx}
+              position={idx}
               title={work.title}
               author={work.author}
               moveWork={moveWork}
               shelfNumber={shelfNumber}
-              workNumber={idx}
+              work={work}
             />
           )
         })}

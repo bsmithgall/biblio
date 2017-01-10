@@ -30,16 +30,14 @@ const workSource = {
     const { clientWidth, clientHeight } = findDOMNode(component);
 
     return {
-      id: props.id,
-      title: props.tite,
-      shelfNumber: props.shelfNumber,
-      workNumber: props.workNumber,
+      work: props.work,
+      position: props.position,
       clientWidth: clientWidth,
       clientHeight: clientHeight
     }
   },
   isDragging(props, monitor) {
-    const isDragging = props.id && props.id === monitor.getItem().id;
+    const isDragging = props.id && props.id === monitor.getItem().work.id;
     return isDragging;
   }
 };

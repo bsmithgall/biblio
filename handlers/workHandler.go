@@ -130,6 +130,9 @@ func updateWork(w http.ResponseWriter, r *http.Request, ctx context.Context) {
 		return
 	}
 
+	shelfKey := datastore.NewKey(ctx, "Shelf", "", work.ShelfId, nil)
+	work.ShelfKey = shelfKey
+
 	if _, err := datastore.Put(ctx, workKey, &work); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

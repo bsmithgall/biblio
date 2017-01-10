@@ -1,0 +1,35 @@
+$pencil-width: 60px;
+
+.bb-loader-pencil-content  {
+  display: flex;
+  height: $navigation-height;
+}
+
+.bb-btn {
+  align-items: center;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  width: $pencil-width;
+  margin-right: 1rem;
+}
+
+// loader CSS
+svg#bb-fetching-loader-pencil {
+  fill: $navigation-color;
+  width: $pencil-width;
+  height: $navigation-height;
+}
+
+#bb-fetching-line {
+  animation: linePencil .8s infinite linear;
+}
+
+@keyframes linePencil {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-150px);
+  }
+}

@@ -1,6 +1,8 @@
+@import 'components/navbar';
 @import 'components/shelf';
 @import 'components/work';
 @import 'components/new_work';
+@import 'components/fetching';
 
 body {
   margin: 0;

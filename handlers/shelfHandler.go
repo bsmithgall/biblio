@@ -44,11 +44,23 @@ func listShelves(w http.ResponseWriter, r *http.Request, ctx context.Context) {
 		var works models.Works
 		shelves[i].Id = key.IntID()
 		vq := datastore.NewQuery("Work").Filter("ShelfKey=", key)
-		if _, err := vq.GetAll(ctx, &works); err != nil {
+
+		workKeys, err := vq.GetAll(ctx, &works)
+		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			log.Errorf(ctx, "GetAll: %v", err)
 			return
 		}
+
+		if works == nil {
+			works = models.Works{}
+		} else {
+			for j, workKey := range workKeys {
+				works[j].Id = workKey.IntID()
+				works[j].ShelfId = key.IntID()
+			}
+		}
+
 		shelves[i].Works = works
 	}
 
