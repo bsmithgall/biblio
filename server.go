@@ -11,6 +11,9 @@ import (
 func init() {
 	r := mux.NewRouter()
 
+	// User Components
+	r.Path("/user").HandlerFunc(h.Welcome)
+
 	// API Components
 	api := r.PathPrefix("/api/v1").Subrouter()
 	api.Path("/works").HandlerFunc(h.WorkListHandler)

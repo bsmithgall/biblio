@@ -6,25 +6,21 @@ import (
 	"net/http"
 	"strconv"
 
-	"golang.org/x/net/context"
+	"github.com/gorilla/mux"
 
 	"google.golang.org/appengine"
-	"google.golang.org/appengine/datastore"
-	"google.golang.org/appengine/log"
-
-	"github.com/gorilla/mux"
 
 	"models"
 )
 
 func WorkListHandler(w http.ResponseWriter, r *http.Request) {
-	ctx := appengine.NewContext(r)
+	dao := &models.WorkDAO{Ctx: appengine.NewContext(r)}
 
 	switch r.Method {
 	case "GET":
-		listWorks(w, r, ctx)
+		listWorks(w, r, dao)
 	case "POST":
-		addWork(w, r, ctx)
+		addWork(w, r, dao)
 	default:
 		http.Error(w, fmt.Sprintf("This method (%s) is not supported", r.Method), http.StatusMethodNotAllowed)
 		return
@@ -32,126 +28,103 @@ func WorkListHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func WorkHandler(w http.ResponseWriter, r *http.Request) {
-	ctx := appengine.NewContext(r)
+	dao := &models.WorkDAO{Ctx: appengine.NewContext(r)}
 
 	switch r.Method {
 	case "GET":
-		getWork(w, r, ctx)
+		getWork(w, r, dao)
 	case "PUT":
-		updateWork(w, r, ctx)
+		updateWork(w, r, dao)
 	case "DELETE":
-		deleteWork(w, r, ctx)
+		deleteWork(w, r, dao)
 	default:
 		http.Error(w, fmt.Sprintf("This method (%s) is not supported", r.Method), http.StatusMethodNotAllowed)
 		return
 	}
 }
 
-func listWorks(w http.ResponseWriter, r *http.Request, ctx context.Context) {
-	var works []*models.Work
-
-	q := datastore.NewQuery("Work")
-	keys, err := q.GetAll(ctx, &works)
-
+func listWorks(w http.ResponseWriter, r *http.Request, dao models.WorkDB) {
+	works, err := dao.ListWorks()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		log.Errorf(ctx, "GetAll: %v", err)
 		return
 	}
-
-	for i, key := range keys {
-		works[i].Id = key.IntID()
+	if works == nil {
+		works = models.Works{}
 	}
-
 	json.NewEncoder(w).Encode(works)
 }
 
-func addWork(w http.ResponseWriter, r *http.Request, ctx context.Context) {
+func addWork(w http.ResponseWriter, r *http.Request, dao models.WorkDB) {
 	var work models.Work
 
 	if err := json.NewDecoder(r.Body).Decode(&work); err != nil {
-		log.Errorf(ctx, "POST: %v", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	shelfKey := datastore.NewKey(ctx, "Shelf", "", work.ShelfId, nil)
-	work.ShelfKey = shelfKey
-
-	workKey := datastore.NewIncompleteKey(ctx, "Work", nil)
-	key, err := datastore.Put(ctx, workKey, &work)
+	work, err := dao.AddWork(work)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	work.Id = key.IntID()
-
-	w.Header().Set("Location", r.URL.String()+fmt.Sprintf("/%d", key.IntID()))
+	w.Header().Set("Location", r.URL.String()+fmt.Sprintf("/%d", work.Id))
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(work)
 }
 
-func getWork(w http.ResponseWriter, r *http.Request, ctx context.Context) {
-	var work models.Work
-
-	key, err := getWorkKey(r)
+func getWork(w http.ResponseWriter, r *http.Request, dao models.WorkDB) {
+	id, err := getIdFromParams(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	workKey := datastore.NewKey(ctx, "Work", "", key, nil)
 
-	if err := datastore.Get(ctx, workKey, &work); err != nil {
+	work, err := dao.GetWork(id)
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	work.Id = workKey.IntID()
 	json.NewEncoder(w).Encode(work)
 }
 
-func updateWork(w http.ResponseWriter, r *http.Request, ctx context.Context) {
+func updateWork(w http.ResponseWriter, r *http.Request, dao models.WorkDB) {
 	var work models.Work
 
-	key, err := getWorkKey(r)
+	id, err := getIdFromParams(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	workKey := datastore.NewKey(ctx, "Work", "", key, nil)
 
-	if err := datastore.Get(ctx, workKey, &work); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	work, getWorkErr := dao.GetWork(id)
+	if getWorkErr != nil {
+		http.Error(w, getWorkErr.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	if err := json.NewDecoder(r.Body).Decode(&work); err != nil {
-		log.Errorf(ctx, "POST: %v", err)
-		return
-	}
-
-	shelfKey := datastore.NewKey(ctx, "Shelf", "", work.ShelfId, nil)
-	work.ShelfKey = shelfKey
-
-	if _, err := datastore.Put(ctx, workKey, &work); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	work.Id = workKey.IntID()
+	work, updateErr := dao.UpdateWork(work)
+	if updateErr != nil {
+		http.Error(w, updateErr.Error(), http.StatusInternalServerError)
+		return
+	}
 	json.NewEncoder(w).Encode(work)
 }
 
-func deleteWork(w http.ResponseWriter, r *http.Request, ctx context.Context) {
-	key, err := getWorkKey(r)
+func deleteWork(w http.ResponseWriter, r *http.Request, dao models.WorkDB) {
+	id, err := getIdFromParams(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	log.Debugf(ctx, "Deleting work key %d", key)
-	workKey := datastore.NewKey(ctx, "Work", "", key, nil)
 
-	if err := datastore.Delete(ctx, workKey); err != nil {
+	if err := dao.DeleteWork(id); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -160,6 +133,6 @@ func deleteWork(w http.ResponseWriter, r *http.Request, ctx context.Context) {
 	fmt.Println(w, []byte{})
 }
 
-func getWorkKey(r *http.Request) (int64, error) {
+func getIdFromParams(r *http.Request) (int64, error) {
 	return strconv.ParseInt(mux.Vars(r)["key"], 10, 64)
 }

@@ -12,6 +12,8 @@ handlers:
   upload: client/build/app.css
 - url: /static
   static_dir: client/build/static
+- url: /user
+  script: _go_app
 - url: /api.*
   script: _go_app
 

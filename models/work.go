@@ -1,6 +1,8 @@
 package models
 
-import "google.golang.org/appengine/datastore"
+import (
+	"google.golang.org/appengine/datastore"
+)
 
 type Work struct {
 	Title    string         `json:"title"`
@@ -12,3 +14,17 @@ type Work struct {
 }
 
 type Works []Work
+
+type WorkDB interface {
+	ListWorks() (Works, error)
+
+	ListWorksByShelf(shelfID int64) (Works, error)
+
+	AddWork(work Work) (Work, error)
+
+	GetWork(id int64) (Work, error)
+
+	UpdateWork(work Work) (Work, error)
+
+	DeleteWork(id int64) error
+}

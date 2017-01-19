@@ -6,84 +6,52 @@ import (
 	"net/http"
 
 	"golang.org/x/net/context"
-
 	"google.golang.org/appengine"
-	"google.golang.org/appengine/datastore"
-	"google.golang.org/appengine/log"
 
 	"models"
 )
 
 func ShelfListHandler(w http.ResponseWriter, r *http.Request) {
-	ctx := appengine.NewContext(r)
+	dao := &models.ShelfDAO{Ctx: appengine.NewContext(r)}
 
 	switch r.Method {
 	case "GET":
-		listShelves(w, r, ctx)
+		listShelves(w, r, dao, ctx)
 	case "POST":
-		addShelf(w, r, ctx)
+		addShelf(w, r, dao, ctx)
 	default:
 		http.Error(w, fmt.Sprintf("This method (%s) is not supported", r.Method), http.StatusMethodNotAllowed)
 		return
 	}
 }
 
-func listShelves(w http.ResponseWriter, r *http.Request, ctx context.Context) {
-	var shelves []*models.Shelf
-
-	q := datastore.NewQuery("Shelf")
-	keys, err := q.GetAll(ctx, &shelves)
-
+func listShelves(w http.ResponseWriter, r *http.Request, dao models.ShelfDB) {
+	shelves, err := dao.ListShelves()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		log.Errorf(ctx, "GetAll: %v", err)
 		return
 	}
-
-	for i, key := range keys {
-		var works models.Works
-		shelves[i].Id = key.IntID()
-		vq := datastore.NewQuery("Work").Filter("ShelfKey=", key)
-
-		workKeys, err := vq.GetAll(ctx, &works)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			log.Errorf(ctx, "GetAll: %v", err)
-			return
-		}
-
-		if works == nil {
-			works = models.Works{}
-		} else {
-			for j, workKey := range workKeys {
-				works[j].Id = workKey.IntID()
-				works[j].ShelfId = key.IntID()
-			}
-		}
-
-		shelves[i].Works = works
+	if shelves == nil {
+		shelves = models.Shelves{}
 	}
 
 	json.NewEncoder(w).Encode(shelves)
 }
 
-func addShelf(w http.ResponseWriter, r *http.Request, ctx context.Context) {
+func addShelf(w http.ResponseWriter, r *http.Request, dao models.ShelfDB) {
 	shelf := &models.Shelf{}
 
 	if err := json.NewDecoder(r.Body).Decode(shelf); err != nil {
-		log.Errorf(ctx, "POST: %v", err)
-	}
-
-	newKey := datastore.NewIncompleteKey(ctx, "Shelf", nil)
-	key, err := datastore.Put(ctx, newKey, shelf)
-	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	shelf.Id = key.IntID()
+	if _, err := dao.AddShelf(shelf); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
-	w.Header().Set("Location", r.URL.String()+fmt.Sprintf("/%s", key.IntID()))
+	w.Header().Set("Location", r.URL.String()+fmt.Sprintf("/%s", shelf.Id))
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(shelf)
 }
