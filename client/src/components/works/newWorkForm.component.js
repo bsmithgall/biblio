@@ -25,7 +25,15 @@ export default class NewWorkForm extends React.Component {
       {title: this.state.title, author: this.state.author},
       this.state.shelfNumber
     )
+    this.resetState()
     this.closeModal()
+  }
+
+  resetState() {
+    this.setState({
+      title: '',
+      author: ''
+    })
   }
 
   render() {

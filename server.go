@@ -19,6 +19,7 @@ func init() {
 	api.Path("/works").HandlerFunc(h.WorkListHandler)
 	api.Path("/works/{key}").HandlerFunc(h.WorkHandler)
 	api.Path("/shelves").HandlerFunc(h.ShelfListHandler)
+	api.Path("/shelves/{key}").HandlerFunc(h.ShelfHandler)
 
 	// Register our mux router with http package, needed
 	// for app engine to see the routes

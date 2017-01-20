@@ -2,6 +2,8 @@ package models
 
 import (
 	"encoding/json"
+
+	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
 )
 
@@ -13,6 +15,10 @@ type Shelf struct {
 }
 
 func (s *Shelf) MarshalJSON() ([]byte, error) {
+	if s.Works == nil {
+		s.Works = Works{}
+	}
+
 	type Alias Shelf
 	return json.Marshal(&struct {
 		Id int64 `json:"id"`
@@ -26,7 +32,11 @@ func (s *Shelf) MarshalJSON() ([]byte, error) {
 type Shelves []Shelf
 
 type ShelfDB interface {
+	Context() context.Context
+
 	ListShelves() (Shelves, error)
 
 	AddShelf(shelf *Shelf) (*Shelf, error)
+
+	GetShelf(id int64) (Shelf, error)
 }

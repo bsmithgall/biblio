@@ -4,9 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strconv"
-
-	"github.com/gorilla/mux"
 
 	"google.golang.org/appengine"
 
@@ -69,7 +66,7 @@ func addWork(w http.ResponseWriter, r *http.Request, dao models.WorkDB) {
 		return
 	}
 
-	w.Header().Set("Location", r.URL.String()+fmt.Sprintf("/%d", work.Id))
+	w.Header().Set("Location", r.URL.String()+fmt.Sprintf("/%d", work.Key.IntID()))
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(work)
 }
@@ -131,8 +128,4 @@ func deleteWork(w http.ResponseWriter, r *http.Request, dao models.WorkDB) {
 
 	w.WriteHeader(http.StatusNoContent)
 	fmt.Println(w, []byte{})
-}
-
-func getIdFromParams(r *http.Request) (int64, error) {
-	return strconv.ParseInt(mux.Vars(r)["key"], 10, 64)
 }
