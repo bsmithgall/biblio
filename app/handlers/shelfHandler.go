@@ -1,4 +1,4 @@
-package handlers
+package app
 
 import (
 	"encoding/json"
@@ -8,11 +8,11 @@ import (
 	"google.golang.org/appengine"
 	"google.golang.org/appengine/log"
 
-	"models"
+	m "github.com/bsmithgall/biblio/models"
 )
 
 func ShelfListHandler(w http.ResponseWriter, r *http.Request) {
-	dao := &models.ShelfDAO{Ctx: appengine.NewContext(r)}
+	dao := &m.ShelfDAO{Ctx: appengine.NewContext(r)}
 
 	switch r.Method {
 	case "GET":
@@ -26,7 +26,7 @@ func ShelfListHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func ShelfHandler(w http.ResponseWriter, r *http.Request) {
-	dao := &models.ShelfDAO{Ctx: appengine.NewContext(r)}
+	dao := &m.ShelfDAO{Ctx: appengine.NewContext(r)}
 
 	switch r.Method {
 	case "GET":
@@ -37,7 +37,7 @@ func ShelfHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func listShelves(w http.ResponseWriter, r *http.Request, dao models.ShelfDB) {
+func listShelves(w http.ResponseWriter, r *http.Request, dao m.ShelfDB) {
 	shelves, err := dao.ListShelves()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -45,14 +45,14 @@ func listShelves(w http.ResponseWriter, r *http.Request, dao models.ShelfDB) {
 	}
 	log.Debugf(dao.Context(), "listShelves [shelves]: %#v", shelves)
 	if shelves == nil {
-		shelves = models.Shelves{}
+		shelves = m.Shelves{}
 	}
 
 	json.NewEncoder(w).Encode(shelves)
 }
 
-func addShelf(w http.ResponseWriter, r *http.Request, dao models.ShelfDB) {
-	shelf := &models.Shelf{}
+func addShelf(w http.ResponseWriter, r *http.Request, dao m.ShelfDB) {
+	shelf := &m.Shelf{}
 
 	if err := json.NewDecoder(r.Body).Decode(shelf); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -69,7 +69,7 @@ func addShelf(w http.ResponseWriter, r *http.Request, dao models.ShelfDB) {
 	json.NewEncoder(w).Encode(shelf)
 }
 
-func getShelf(w http.ResponseWriter, r *http.Request, dao models.ShelfDB) {
+func getShelf(w http.ResponseWriter, r *http.Request, dao m.ShelfDB) {
 	id, err := getIdFromParams(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

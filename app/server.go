@@ -1,4 +1,4 @@
-package biblio
+package app
 
 import (
 	"net/http"
@@ -12,7 +12,9 @@ func init() {
 	r := mux.NewRouter()
 
 	// User Components
-	r.Path("/user").HandlerFunc(h.Welcome)
+	users := r.PathPrefix("/users").Subrouter()
+	users.Path("/login").HandlerFunc(h.LoginHandler)
+	users.Path("/oauth2callback").HandlerFunc(h.OAuthCallbackHandler)
 
 	// API Components
 	api := r.PathPrefix("/api/v1").Subrouter()

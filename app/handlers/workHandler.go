@@ -1,17 +1,17 @@
-package handlers
+package app
 
 import (
 	"encoding/json"
 	"fmt"
 	"net/http"
 
-	"google.golang.org/appengine"
+	m "github.com/bsmithgall/biblio/models"
 
-	"models"
+	"google.golang.org/appengine"
 )
 
 func WorkListHandler(w http.ResponseWriter, r *http.Request) {
-	dao := &models.WorkDAO{Ctx: appengine.NewContext(r)}
+	dao := &m.WorkDAO{Ctx: appengine.NewContext(r)}
 
 	switch r.Method {
 	case "GET":
@@ -25,7 +25,7 @@ func WorkListHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func WorkHandler(w http.ResponseWriter, r *http.Request) {
-	dao := &models.WorkDAO{Ctx: appengine.NewContext(r)}
+	dao := &m.WorkDAO{Ctx: appengine.NewContext(r)}
 
 	switch r.Method {
 	case "GET":
@@ -40,20 +40,20 @@ func WorkHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func listWorks(w http.ResponseWriter, r *http.Request, dao models.WorkDB) {
+func listWorks(w http.ResponseWriter, r *http.Request, dao m.WorkDB) {
 	works, err := dao.ListWorks()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	if works == nil {
-		works = models.Works{}
+		works = m.Works{}
 	}
 	json.NewEncoder(w).Encode(works)
 }
 
-func addWork(w http.ResponseWriter, r *http.Request, dao models.WorkDB) {
-	var work models.Work
+func addWork(w http.ResponseWriter, r *http.Request, dao m.WorkDB) {
+	var work m.Work
 
 	if err := json.NewDecoder(r.Body).Decode(&work); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -71,7 +71,7 @@ func addWork(w http.ResponseWriter, r *http.Request, dao models.WorkDB) {
 	json.NewEncoder(w).Encode(work)
 }
 
-func getWork(w http.ResponseWriter, r *http.Request, dao models.WorkDB) {
+func getWork(w http.ResponseWriter, r *http.Request, dao m.WorkDB) {
 	id, err := getIdFromParams(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -86,8 +86,8 @@ func getWork(w http.ResponseWriter, r *http.Request, dao models.WorkDB) {
 	json.NewEncoder(w).Encode(work)
 }
 
-func updateWork(w http.ResponseWriter, r *http.Request, dao models.WorkDB) {
-	var work models.Work
+func updateWork(w http.ResponseWriter, r *http.Request, dao m.WorkDB) {
+	var work m.Work
 
 	id, err := getIdFromParams(r)
 	if err != nil {
@@ -114,7 +114,7 @@ func updateWork(w http.ResponseWriter, r *http.Request, dao models.WorkDB) {
 	json.NewEncoder(w).Encode(work)
 }
 
-func deleteWork(w http.ResponseWriter, r *http.Request, dao models.WorkDB) {
+func deleteWork(w http.ResponseWriter, r *http.Request, dao m.WorkDB) {
 	id, err := getIdFromParams(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

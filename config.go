@@ -4,9 +4,16 @@ import (
 	"log"
 	"os"
 
+	"github.com/gorilla/sessions"
 	"github.com/joho/godotenv"
+
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
+)
+
+var (
+	OAuthConfig  *oauth2.Config
+	SessionStore sessions.Store
 )
 
 func init() {
@@ -14,17 +21,22 @@ func init() {
 
 	godotenv.Load()
 
-	// OAuthConfig := configureOAuthClient(os.Getenv("OAUTH_CLIENT_ID"), os.Getenv("OAUTH_SECRET"))
+	OAuthConfig = configureOAuthClient(os.Getenv("OAUTH_CLIENT_ID"), os.Getenv("OAUTH_SECRET"))
+	store := sessions.NewCookieStore([]byte(os.Getenv("SECRET_KEY")))
+	store.Options = &sessions.Options{
+		HttpOnly: true,
+	}
+	SessionStore = store
 
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
-func configureOAuthClient(clientID, clientSecret string) *oauth2.Config {
+func configureOAuthClient(clientID string, clientSecret string) *oauth2.Config {
 	redirectURL := os.Getenv("OAUTH2_CALLBACK")
 	if redirectURL == "" {
-		redirectURL = "http://localhost:8080/oauth2callback"
+		redirectURL = "http://localhost:8080/users/oauth2callback"
 	}
 	return &oauth2.Config{
 		ClientID:     clientID,
