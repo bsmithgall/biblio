@@ -28,6 +28,10 @@ const (
 	oauthFlowRedirectKey = "redirect"
 )
 
+type Profile struct {
+	ID, DisplayName, ImageURL string
+}
+
 func init() {
 	// Gob encoding for gorilla/sessions
 	gob.Register(&oauth2.Token{})
@@ -66,7 +70,8 @@ func OAuthCallbackHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	code := r.FormValue("code")
-	tok, err := biblio.OAuthConfig.Exchange(rCtx, code)
+	token, err := biblio.OAuthConfig.Exchange(rCtx, code)
+	log.Debugf(rCtx, "Getting token: %#v", token)
 	if err != nil {
 		log.Errorf(rCtx, "could not get auth token: %v", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -74,29 +79,31 @@ func OAuthCallbackHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	session, err := biblio.SessionStore.New(r, defaultSessionID)
+	log.Debugf(rCtx, "Getting default session: %#v", session)
 	if err != nil {
 		log.Errorf(rCtx, "could not get default session: %v", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	profile, err := fetchProfile(rCtx, tok)
+	profile, err := fetchProfile(rCtx, token)
 	if err != nil {
 		log.Errorf(rCtx, "could not fetch Google profile: %v", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	session.Values[oauthTokenSessionKey] = tok
+	session.Values[oauthTokenSessionKey] = token
 	// Strip the profile to only the fields we need. Otherwise the struct is too big.
 	session.Values[googleProfileSessionKey] = stripProfile(profile)
+
 	if err := session.Save(r, w); err != nil {
 		log.Errorf(rCtx, "could not save session: %v", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	http.Redirect(w, r, "/", http.StatusFound)
+	http.Redirect(w, r, "/api/v1/user", http.StatusFound)
 	return
 }
 
@@ -111,8 +118,28 @@ func fetchProfile(ctx context.Context, tok *oauth2.Token) (*plus.Person, error) 
 	return plusService.People.Get("me").Do()
 }
 
-type Profile struct {
-	ID, DisplayName, ImageURL string
+func getProfileFromSession(r *http.Request) *Profile {
+	ctx := appengine.NewContext(r)
+	session, err := biblio.SessionStore.Get(r, defaultSessionID)
+	log.Debugf(ctx, "Getting default session: %#v", session)
+	log.Debugf(ctx, "Getting default session [values]: %#v", session.Values)
+	if err != nil {
+		return nil
+	}
+
+	token, ok := session.Values[oauthTokenSessionKey].(*oauth2.Token)
+	log.Debugf(ctx, "Getting token: %#v | %v", token, ok)
+	if !ok || !token.Valid() {
+		return nil
+	}
+
+	profile, ok := session.Values[googleProfileSessionKey].(*Profile)
+	log.Debugf(ctx, "Getting profile: %#v | %v", profile, ok)
+	if !ok {
+		return nil
+	}
+
+	return profile
 }
 
 // stripProfile returns a subset of a plus.Person.

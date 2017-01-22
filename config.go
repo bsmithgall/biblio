@@ -23,9 +23,6 @@ func init() {
 
 	OAuthConfig = configureOAuthClient(os.Getenv("OAUTH_CLIENT_ID"), os.Getenv("OAUTH_SECRET"))
 	store := sessions.NewCookieStore([]byte(os.Getenv("SECRET_KEY")))
-	store.Options = &sessions.Options{
-		HttpOnly: true,
-	}
 	SessionStore = store
 
 	if err != nil {

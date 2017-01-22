@@ -18,10 +18,16 @@ func init() {
 
 	// API Components
 	api := r.PathPrefix("/api/v1").Subrouter()
+	// works
 	api.Path("/works").HandlerFunc(h.WorkListHandler)
 	api.Path("/works/{key}").HandlerFunc(h.WorkHandler)
+
+	// shelves
 	api.Path("/shelves").HandlerFunc(h.ShelfListHandler)
 	api.Path("/shelves/{key}").HandlerFunc(h.ShelfHandler)
+
+	// user
+	api.Path("/user").HandlerFunc(h.UserHandler)
 
 	// Register our mux router with http package, needed
 	// for app engine to see the routes
