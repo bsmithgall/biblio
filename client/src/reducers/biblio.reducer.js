@@ -10,6 +10,7 @@ const biblio = function(state = {isFetching: false}, action) {
     }
 
     case types.END_SHELF_FETCHING:
+    case types.END_USER_FETCHING:
     case types.END_WORK_FETCHING: {
       newState = Object.assign({}, state)
       newState.isFetching = false

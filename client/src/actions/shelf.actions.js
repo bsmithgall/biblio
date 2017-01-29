@@ -1,10 +1,10 @@
 import * as constants from '../constants'
 
-export function fetchingShelves() {
+function fetchingShelves() {
   return { type: constants.FETCHING }
 }
 
-export function receivedShelves(shelves) {
+function receivedShelves(shelves) {
   return {
     type: constants.END_SHELF_FETCHING,
     payload: {

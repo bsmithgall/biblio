@@ -2,19 +2,18 @@ import React from 'react'
 import { findDOMNode } from 'react-dom'
 
 import { DropTarget } from 'react-dnd';
-import * as types from '../../constants/dndTypes'
-import * as sizes from '../../constants/shelfSizes'
+import * as constants from '../../constants'
 
 import WorkContainer from '../../containers/work.container'
 
 function getPlaceholderIndex(y, scrollY) {
   // shift placeholder if y position more than card height / 2
-  const yPos = y - sizes.OFFSET_HEIGHT + scrollY;
+  const yPos = y - constants.OFFSET_HEIGHT + scrollY;
   let placeholderIndex;
-  if (yPos < sizes.CARD_HEIGHT / 2) {
+  if (yPos < constants.CARD_HEIGHT / 2) {
     placeholderIndex = -1; // place at the start
   } else {
-    placeholderIndex = Math.floor((yPos - sizes.CARD_HEIGHT / 2) / (sizes.CARD_HEIGHT + sizes.CARD_MARGIN));
+    placeholderIndex = Math.floor((yPos - constants.CARD_HEIGHT / 2) / (constants.CARD_HEIGHT + constants.CARD_MARGIN));
   }
   return placeholderIndex;
 }
@@ -99,4 +98,4 @@ class ShelfList extends React.Component {
   }
 }
 
-export default DropTarget(types.WORK, specs, collectDropTarget)(ShelfList)
+export default DropTarget(constants.DND_WORK, specs, collectDropTarget)(ShelfList)

@@ -34,6 +34,13 @@ describe('Reducers', function() {
         const newState = biblioReducer(fetch, {type: types.END_WORK_FETCHING})
         expect(newState.isFetching).to.be.false
       })
+
+      it('should properly end fetching for user', function() {
+        const fetch = biblioReducer(initState, {type: types.FETCHING})
+        expect(fetch.isFetching).to.be.true
+        const newState = biblioReducer(fetch, {type: types.END_USER_FETCHING})
+        expect(newState.isFetching).to.be.false
+      })
     })
   })
 })

@@ -4,7 +4,7 @@ import React from 'react'
 export default class Fetching extends React.Component {
   render() {
     const showStatus = {
-      'display': this.props.isFetching ? 'flex' : 'none'
+      'display': this.props.isFetching ? 'inline-flex' : 'none'
     }
 
     return (

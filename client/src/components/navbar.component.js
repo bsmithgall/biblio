@@ -1,6 +1,7 @@
 import React from 'react'
 
 import Fetching from './fetching.component'
+import User from './user.component'
 
 export default class NavBar extends React.Component {
   render() {
@@ -13,13 +14,11 @@ export default class NavBar extends React.Component {
           <a href="" className="navigation-menu-button" id="js-mobile-menu">MENU</a>
           <nav role="navigation">
             <ul id="js-navigation-menu" className="navigation-menu show">
-              <li className="nav-link"><a href="">Products</a></li>
-              <li className="nav-link"><a href="">About Us</a></li>
-              <li className="nav-link"><a href="">Contact</a></li>
             </ul>
           </nav>
           <div className="navigation-tools">
             <Fetching isFetching={this.props.isFetching} />
+            <User user={this.props.user} />
           </div>
         </div>
       </header>

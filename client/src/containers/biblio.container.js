@@ -9,7 +9,8 @@ import * as WorkActions from '../actions/work.actions'
 const mapStateToProps = function(state) {
   return {
     biblio: state.biblio,
-    shelves: state.shelves
+    shelves: state.shelves,
+    user: state.user
   }
 }
 

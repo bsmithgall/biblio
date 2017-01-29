@@ -14,9 +14,13 @@ The first version's featureset is going to be extremely limited: you will be abl
 + [x] Add support for adding new "works"
 + [ ] Figure out an API contract between the front-end and the backend
     + [x] Add/List
-    + [ ] Update/remove
+    + [x] Update/remove
+    + [ ] Biblio position
++ [ ] Add OAuth to manage users/books
 + [ ] Add tests
-+ [ ] Wire it all up
+    + [x] React tests
+    + [ ] Go tests
++ [x] Wire it all up
 + [ ] Talk to either the [Google Books API](https://developers.google.com/books/) or a different one to get book metadata
 + [ ] Deploy it out
 

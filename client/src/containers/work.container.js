@@ -3,7 +3,7 @@ import { findDOMNode } from 'react-dom'
 
 import { DragSource } from 'react-dnd'
 
-import * as types from '../constants/dndTypes'
+import * as types from '../constants'
 import * as WorkActions from '../actions/work.actions'
 import Work from '../components/works/work.component'
 
@@ -62,4 +62,4 @@ const WorkContainer = connect(
   mapDispatchToProps
 )(Work)
 
-export default DragSource(types.WORK, workSource, collectDragSource, OPTIONS)(WorkContainer)
+export default DragSource(types.DND_WORK, workSource, collectDragSource, OPTIONS)(WorkContainer)
