@@ -28,7 +28,7 @@ export function addWork(work, shelfId) {
     dispatch(updateWork())
     return fetch(types.API_ENDPOINT + '/works', {
       method: "POST",
-      body: JSON.stringify(Object.assign({}, work, {shelfId: shelfId}))
+      body: JSON.stringify(Object.assign({}, work, {shelf_id: shelfId}))
     })
       .then(function(response) { return response.json() })
       .then(function(json) {
