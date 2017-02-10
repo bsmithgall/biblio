@@ -19,4 +19,5 @@ handlers:
 
 skip_files:
 - ^client\/node_modules\/(?!build.*)
+- ^.*node_modules(/.*)?
 - ^.git/*

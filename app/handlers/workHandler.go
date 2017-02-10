@@ -8,6 +8,7 @@ import (
 	m "github.com/bsmithgall/biblio/models"
 
 	"google.golang.org/appengine"
+	"google.golang.org/appengine/log"
 )
 
 func WorkListHandler(w http.ResponseWriter, r *http.Request) {
@@ -83,6 +84,9 @@ func getWork(w http.ResponseWriter, r *http.Request, dao m.WorkDB) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	log.Debugf(appengine.NewContext(r), "getWork: %#v", work)
+	log.Debugf(appengine.NewContext(r), "getWork: %#v", work.Key)
+	log.Debugf(appengine.NewContext(r), "getWork: %#v", work.Key.IntID())
 	json.NewEncoder(w).Encode(work)
 }
 

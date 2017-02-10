@@ -42,6 +42,8 @@ type ShelfDB interface {
 	AddShelf(shelf *Shelf) (*Shelf, error)
 
 	GetShelf(id int64) (Shelf, error)
+
+	DeleteShelf(id int64) error
 }
 
 type ShelfDAO struct {
@@ -53,6 +55,7 @@ func (dao *ShelfDAO) Context() context.Context {
 }
 
 func (dao *ShelfDAO) ListShelves() (Shelves, error) {
+	log.Infof(dao.Ctx, "ListShelves")
 	var shelves Shelves
 
 	q := datastore.NewQuery("Shelf")
@@ -79,6 +82,7 @@ func (dao *ShelfDAO) ListShelves() (Shelves, error) {
 }
 
 func (dao *ShelfDAO) AddShelf(shelf *Shelf) (*Shelf, error) {
+	log.Infof(dao.Ctx, "AddShelf: %#v", shelf)
 	newKey := datastore.NewIncompleteKey(dao.Ctx, "Shelf", nil)
 
 	putKey, err := datastore.Put(dao.Ctx, newKey, shelf)
@@ -91,8 +95,8 @@ func (dao *ShelfDAO) AddShelf(shelf *Shelf) (*Shelf, error) {
 }
 
 func (dao *ShelfDAO) GetShelf(id int64) (Shelf, error) {
+	log.Infof(dao.Ctx, "GetShelf: %d", id)
 	var shelf Shelf
-	log.Errorf(dao.Ctx, "GetShelf: %d", id)
 
 	shelfKey := datastore.NewKey(dao.Ctx, "Shelf", "", id, nil)
 
@@ -106,10 +110,34 @@ func (dao *ShelfDAO) GetShelf(id int64) (Shelf, error) {
 		return shelf, fmt.Errorf("GetShelf: %v", worksErr)
 	}
 
-	log.Errorf(dao.Ctx, "GetShelf [works]: %v", works)
-	log.Errorf(dao.Ctx, "GetShelf [set key]: %#v", shelfKey)
-
 	shelf.Works = works
 	shelf.Key = shelfKey
 	return shelf, nil
+}
+
+func (dao *ShelfDAO) DeleteShelf(id int64) error {
+	log.Infof(dao.Ctx, "DeleteShelf: %d", id)
+
+	shelfKey := datastore.NewKey(dao.Ctx, "Shelf", "", id, nil)
+
+	workDao := &WorkDAO{Ctx: dao.Ctx}
+	works, worksErr := workDao.ListWorksByShelf(shelfKey.IntID())
+	if worksErr != nil {
+		return fmt.Errorf("GetShelf: %v", worksErr)
+	}
+
+	var workKeys []*datastore.Key
+	for j, _ := range works {
+		workKeys = append(workKeys, works[j].Key)
+	}
+
+	if err := datastore.DeleteMulti(dao.Ctx, workKeys); err != nil {
+		return fmt.Errorf("ShelfDAO: could not delete works: %v", err)
+	}
+
+	if err := datastore.Delete(dao.Ctx, shelfKey); err != nil {
+		return fmt.Errorf("ShelfDAO: could not delete shelf %v", err)
+	}
+
+	return nil
 }

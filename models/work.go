@@ -20,16 +20,17 @@ type Work struct {
 	ShelfKey *datastore.Key `json:"-"`
 }
 
-func (w *Work) MarshalJSON() ([]byte, error) {
+func (w Work) MarshalJSON() ([]byte, error) {
 	type Alias Work
+
 	return json.Marshal(&struct {
 		Id      int64 `json:"id"`
 		ShelfId int64 `json:"shelf_id"`
-		*Alias
+		Alias
 	}{
 		Id:      w.Key.IntID(),
 		ShelfId: w.ShelfKey.IntID(),
-		Alias:   (*Alias)(w),
+		Alias:   (Alias)(w),
 	})
 }
 
@@ -54,6 +55,7 @@ type WorkDAO struct {
 }
 
 func (dao *WorkDAO) ListWorks() (Works, error) {
+	log.Infof(dao.Ctx, "ListWorks")
 	var works Works
 
 	keys, err := datastore.NewQuery("Work").GetAll(dao.Ctx, &works)
@@ -66,13 +68,13 @@ func (dao *WorkDAO) ListWorks() (Works, error) {
 		works[i].Key = key
 	}
 
+	log.Infof(dao.Ctx, "ListWorks: %#v", works)
 	return works, nil
 }
 
 func (dao *WorkDAO) ListWorksByShelf(shelfID int64) (Works, error) {
+	log.Infof(dao.Ctx, "ListWorksByShelf: %d", shelfID)
 	var works Works
-
-	log.Errorf(dao.Ctx, "ListWorksByShelf: %d", shelfID)
 
 	key := datastore.NewKey(dao.Ctx, "Shelf", "", shelfID, nil)
 	vq := datastore.NewQuery("Work").Filter("ShelfKey=", key)
@@ -87,11 +89,11 @@ func (dao *WorkDAO) ListWorksByShelf(shelfID int64) (Works, error) {
 		works[j].Key = workKey
 	}
 
-	log.Errorf(dao.Ctx, "ListWorksByShelf [works]: %v", works)
 	return works, nil
 }
 
 func (dao *WorkDAO) AddWork(work Work) (Work, error) {
+	log.Infof(dao.Ctx, "AddWork: %#v", work)
 	shelfKey := datastore.NewKey(dao.Ctx, "Shelf", "", work.ShelfId, nil)
 	work.ShelfKey = shelfKey
 
@@ -107,6 +109,7 @@ func (dao *WorkDAO) AddWork(work Work) (Work, error) {
 }
 
 func (dao *WorkDAO) GetWork(id int64) (Work, error) {
+	log.Infof(dao.Ctx, "GetWork: %d", id)
 	var work Work
 	workKey := datastore.NewKey(dao.Ctx, "Work", "", id, nil)
 
@@ -120,6 +123,7 @@ func (dao *WorkDAO) GetWork(id int64) (Work, error) {
 }
 
 func (dao *WorkDAO) UpdateWork(work Work) (Work, error) {
+	log.Infof(dao.Ctx, "UpdateWork: %#v", work)
 	shelfKey := datastore.NewKey(dao.Ctx, "Shelf", "", work.ShelfId, nil)
 	work.ShelfKey = shelfKey
 
@@ -136,6 +140,7 @@ func (dao *WorkDAO) UpdateWork(work Work) (Work, error) {
 }
 
 func (dao *WorkDAO) DeleteWork(id int64) error {
+	log.Infof(dao.Ctx, "DeleteWork: %d", id)
 	workKey := datastore.NewKey(dao.Ctx, "Work", "", id, nil)
 
 	if err := datastore.Delete(dao.Ctx, workKey); err != nil {

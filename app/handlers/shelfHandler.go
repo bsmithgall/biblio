@@ -31,6 +31,8 @@ func ShelfHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		getShelf(w, r, dao)
+	case "DELETE":
+		deleteShelf(w, r, dao)
 	default:
 		http.Error(w, fmt.Sprintf("This method (%s) is not supported", r.Method), http.StatusMethodNotAllowed)
 		return
@@ -83,4 +85,20 @@ func getShelf(w http.ResponseWriter, r *http.Request, dao m.ShelfDB) {
 	}
 
 	json.NewEncoder(w).Encode(&shelf)
+}
+
+func deleteShelf(w http.ResponseWriter, r *http.Request, dao m.ShelfDB) {
+	id, err := getIdFromParams(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if err := dao.DeleteShelf(id); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+	fmt.Println(w, []byte{})
 }
