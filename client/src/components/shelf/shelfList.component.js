@@ -1,27 +1,41 @@
 import React from 'react';
 import WorkContainer from '../../containers/work.container';
+import WorkPlaceholder from '../works/workPlaceholder.component';
 
 class ShelfList extends React.Component {
-  constructor(props) {
-    super(props);
-    this.setPlaceholder = this.setPlaceholder.bind(this);
-    this.state = {
-      placeholderIndex: -1,
-      currentDragged: -1,
-      dragDir: '',
-    };
+  shouldRenderPlaceholderAbove(ph, shelfNumber, idx) {
+    return ph.currentDraggedShelf === shelfNumber &&
+      ph.placeholderIndex === idx &&
+      (idx !== ph.currentDragged || ph.originShelf !== shelfNumber) &&
+      ph.draggedDir === 'up';
+  }
+
+  shouldRenderPlaceholderBelow(ph, shelfNumber, idx) {
+    return ph.currentDraggedShelf === shelfNumber &&
+      ph.placeholderIndex === idx &&
+      (idx !== ph.currentDragged || ph.originShelf !== shelfNumber) &&
+      ph.draggedDir === 'down';
   }
 
   render() {
-    const { works, shelfNumber, moveWork } = this.props;
-    const { placeholderIndex, currentDragged, dragDir } = this.state;
-    const setPlaceholder = this.setPlaceholder;
+    const { works, shelfNumber, moveWork, setPlaceholder, placeholder } = this.props;
+    const shouldRenderPlaceholderAbove = this.shouldRenderPlaceholderAbove;
+    const shouldRenderPlaceholderBelow = this.shouldRenderPlaceholderBelow;
 
     const worksWithPlaceholder = [];
     works.forEach(function(work, idx) {
-      if (placeholderIndex === idx && idx !== currentDragged && dragDir === 'up') {
-        worksWithPlaceholder.push(<div key="placeholder" className="bb-work bb-work-placeholder" />);
+      if (shouldRenderPlaceholderAbove(placeholder, shelfNumber, idx)) {
+        worksWithPlaceholder.push(
+          <WorkPlaceholder
+            key="placeholder"
+            setPlaceholder={setPlaceholder}
+            moveWork={moveWork}
+            position={idx}
+            shelfNumber={shelfNumber}
+          />
+        );
       }
+
       worksWithPlaceholder.push(
         <WorkContainer
           id={work.id}
@@ -32,12 +46,21 @@ class ShelfList extends React.Component {
           moveWork={moveWork}
           shelfNumber={shelfNumber}
           work={work}
-          currentPlaceholder={placeholderIndex}
+          placeholder={placeholder}
           setPlaceholder={setPlaceholder}
         />
       );
-      if (placeholderIndex === idx && idx !== currentDragged && dragDir === 'down') {
-        worksWithPlaceholder.push(<div key="placeholder" className="bb-work bb-work-placeholder" />);
+
+      if (shouldRenderPlaceholderBelow(placeholder, shelfNumber, idx)) {
+        worksWithPlaceholder.push(
+          <WorkPlaceholder
+            key="placeholder"
+            setPlaceholder={setPlaceholder}
+            moveWork={moveWork}
+            position={idx}
+            shelfNumber={shelfNumber}
+          />
+        );
       }
     });
 
@@ -47,20 +70,14 @@ class ShelfList extends React.Component {
       </div>
     );
   }
-
-  setPlaceholder(draggedPosition, hoverPosition, dragDir) {
-    this.setState({
-      placeholderIndex: hoverPosition,
-      currentDragged: draggedPosition,
-      dragDir: dragDir,
-    });
-  }
 }
 
 ShelfList.propTypes = {
   works: React.PropTypes.arrayOf(React.PropTypes.object),
   shelfNumber: React.PropTypes.number.isRequired,
   moveWork: React.PropTypes.func,
+  setPlaceholder: React.PropTypes.func,
+  placeholder: React.PropTypes.object,
 };
 
-export default ShelfList
+export default ShelfList;

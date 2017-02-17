@@ -10,6 +10,12 @@ class Work extends React.Component {
     this.clickDelete = this.clickDelete.bind(this);
   }
 
+  clickDelete() {
+    if (confirm('Are you sure you want to remove ' + this.props.title + ' from your biblio?')) {
+      this.props.deleteWork(this.props.id, this.props.shelfNumber);
+    }
+  }
+
   render() {
     const { id, title, author, connectDragSource, connectDropTarget } = this.props;
 
@@ -28,12 +34,6 @@ class Work extends React.Component {
       </div>
     ));
   }
-
-  clickDelete() {
-    if (confirm('Are you sure you want to remove ' + this.props.title + ' from your biblio?')) {
-      this.props.deleteWork(this.props.id, this.props.shelfNumber);
-    }
-  }
 }
 
 Work.propTypes = {
@@ -42,6 +42,7 @@ Work.propTypes = {
   author: React.PropTypes.string.isRequired,
   shelfNumber: React.PropTypes.number.isRequired,
   currentPlaceholder: React.PropTypes.number,
+  placeholder: React.PropTypes.object,
   setPlaceholder: React.PropTypes.func,
   connectDragSource: React.PropTypes.func,
   connectDropTarget: React.PropTypes.func,
@@ -57,19 +58,26 @@ const workDragSource = {
       position: props.position,
     };
   },
-
   endDrag: function(props, monitor) {
-    props.setPlaceholder(-1, -1, '');
-    const item = monitor.getItem();
-    props.moveWork(item.shelfId, item.position, props.shelfNumber, props.currentPlaceholder);
-  },
+    const didDrop = monitor.didDrop();
+    if (!didDrop) {
+      props.setPlaceholder(-1, -1, '', -1);
+    }
+  }
 };
 
 const workDropTarget = {
   hover: function(props, monitor, component) {
     const item = monitor.getItem();
-    const draggedPosition = item.position;
-    const hoverPosition = props.position;
+    const { placeholderIndex, currentDraggedShelf, draggedDir } = props.placeholder;
+
+    // end early if we are hovering over the original spot
+    if (props.position === item.position && props.shelfNumber === item.shelfId) {
+      if (placeholderIndex > -1) {
+        props.setPlaceholder(-1, -1, '', -1, -1);
+      }
+      return;
+    }
 
     // find the middle of things
     const hoverBoundingRect = findDOMNode(component).getBoundingClientRect();
@@ -78,19 +86,31 @@ const workDropTarget = {
     const hoverClientY = clientOffset.y - hoverBoundingRect.top;
 
     // don't move until we are halfway over the card
-    if (draggedPosition < hoverPosition && hoverClientY < hoverMiddleY) return;
-    if (draggedPosition > hoverPosition && hoverClientY > hoverMiddleY) return;
+    if (item.position < props.position && hoverClientY < hoverMiddleY) return;
+    if (item.position > props.position && hoverClientY > hoverMiddleY) return;
 
     // insert a display placeholder at an appropriate position
-    const dragDir = draggedPosition > hoverPosition ? 'up' : 'down';
-    props.setPlaceholder(draggedPosition, hoverPosition, dragDir);
+    const dragDir = hoverClientY < hoverMiddleY ? 'up' : 'down';
+
+    // end early if we are hovering over the spot where our placeholder already is
+    if (placeholderIndex === props.position &&
+      currentDraggedShelf === props.shelfNumber &&
+      dragDir === draggedDir) return;
+
+    props.setPlaceholder(item.position, props.position, dragDir, props.shelfNumber, item.shelfId);
+  },
+  drop: function(props, monitor) {
+    props.setPlaceholder(-1, -1, '', -1, -1);
+    const item = monitor.getItem();
+    props.moveWork(item.shelfId, item.position, props.shelfNumber, props.position);
   },
 };
 
 export default flow(
-  DropTarget(DRAG_WORK, workDropTarget, function(connect) {
+  DropTarget(DRAG_WORK, workDropTarget, function(connect, monitor) {
     return {
       connectDropTarget: connect.dropTarget(),
+      isOver: monitor.isOver(),
     };
   }),
   DragSource(DRAG_WORK, workDragSource, function(connect) {

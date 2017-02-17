@@ -17,6 +17,9 @@ const mapDispatchToProps = function(dispatch) {
     moveWork: function(workId, lastShelf, lastWork, nextShelf, nextWork) {
       dispatch(WorkActions.performMove(workId, lastShelf, lastWork, nextShelf, nextWork));
     },
+    setPlaceholder: function(placeholderIndex, currentDragged, draggedDir, currentDraggedShelf, originShelf) {
+      dispatch(WorkActions.setPlaceholder(placeholderIndex, currentDragged, draggedDir, currentDraggedShelf, originShelf));
+    },
     addWork: function(work, shelf) { dispatch(WorkActions.addWork(work, shelf)); },
   };
 };

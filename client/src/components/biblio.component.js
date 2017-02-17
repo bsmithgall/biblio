@@ -1,10 +1,10 @@
-import React from 'react'
+import React from 'react';
+import Shelf from './shelf/shelf.component';
 
-import Shelf from './shelf/shelf.component'
-
-export default class Biblio extends React.Component {
+class Biblio extends React.Component {
   render() {
-    const { shelves, moveWork, addWork } = this.props
+    const { moveWork, addWork, setPlaceholder } = this.props;
+    const { shelves, placeholder } = this.props.shelves;
 
     return (
       <div className="bb-biblio bb-shelf-container">
@@ -17,11 +17,22 @@ export default class Biblio extends React.Component {
               shelfNumber={shelf.id}
               addWork={addWork}
               moveWork={moveWork}
+              setPlaceholder={setPlaceholder}
+              placeholder={placeholder}
             />
-          )
+          );
         })}
       </div>
-    )
+    );
   }
 }
+
+Biblio.propTypes = {
+  shelves: React.PropTypes.object,
+  moveWork: React.PropTypes.func,
+  addWork: React.PropTypes.func,
+  setPlaceholder: React.PropTypes.func,
+};
+
+export default Biblio;
 

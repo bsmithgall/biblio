@@ -38,6 +38,19 @@ export function addWork(work, shelfId) {
   }
 }
 
+export function setPlaceholder(currentDragged, placeholderIndex, draggedDir, currentDraggedShelf, originShelf) {
+  return {
+    type: types.DRAG_WORK_PLACEHOLDER,
+    payload: {
+      currentDragged: currentDragged,
+      placeholderIndex: placeholderIndex,
+      draggedDir: draggedDir,
+      currentDraggedShelf: currentDraggedShelf,
+      originShelf: originShelf,
+    },
+  };
+}
+
 export function performMove(lastShelf, lastWorkPos, nextShelf, nextWorkPos) {
   return {
     type: types.MOVE_WORK,
@@ -45,9 +58,9 @@ export function performMove(lastShelf, lastWorkPos, nextShelf, nextWorkPos) {
       lastShelfId: lastShelf,
       lastWorkPos: lastWorkPos,
       nextShelfId: nextShelf,
-      nextWorkPos: nextWorkPos
-    }
-  }
+      nextWorkPos: nextWorkPos,
+    },
+  };
 }
 
 export function moveWork(work, lastShelf, lastWorkPos, nextShelf, nextWorkPos) {
