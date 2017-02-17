@@ -4,8 +4,8 @@ export const MOVE_WORK = 'work.move_work'
 export const DELETE_WORK = 'work.delete_work'
 
 // drag and drop actions
-export const DND_WORK = 'drag_and_drop.work'
-export const DND_SHELF = 'drag_and_drop.shelf'
+export const DRAG_WORK = 'drag_and_drop.work'
+export const DRAG_SHELF = 'drag_and_drop.shelf'
 
 // shelf actions
 export const LIST_SHELVES = 'shelf.list_shelves'

@@ -1,16 +1,17 @@
+$bb-work-color: $base-font-color;
+$base-border-radius: 3px !default;
+$base-spacing: 1.5em !default;
+$action-color: #477DCA !default;
+$dark-gray: #333 !default;
+$base-font-color: $dark-gray !default;
+$bb-work-gutter: 1.4em;
+$bb-work-image-padding: 0.7em;
+$bb-work-image-width: 4em;
+$bb-work-background: lighten($action-color, 15%);
+$bb-work-detail-color: transparentize($bb-work-color, 0.5);
+$bb-work-image-vert-alignment: top;
+
 .bb-work {
-  $base-border-radius: 3px !default;
-  $base-spacing: 1.5em !default;
-  $action-color: #477DCA !default;
-  $dark-gray: #333 !default;
-  $base-font-color: $dark-gray !default;
-  $bb-work-gutter: 1.4em;
-  $bb-work-image-padding: 0.7em;
-  $bb-work-image-width: 4em;
-  $bb-work-color: $base-font-color;
-  $bb-work-background: lighten($action-color, 15%);
-  $bb-work-detail-color: transparentize($bb-work-color, 0.5);
-  $bb-work-image-vert-alignment: top;
 
   @include outer-container;
   border-bottom: 1px solid transparentize($bb-work-color, 0.9);
@@ -80,4 +81,9 @@
       background-color: transparentize($bb-work-color, 0.75);
     }
   }
+}
+
+.bb-work-placeholder {
+  background-color: transparentize($bb-work-color, 0.75);
+  min-height: 5rem;
 }

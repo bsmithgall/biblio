@@ -1,8 +1,6 @@
 import { connect } from 'react-redux'
-
-import { DragDropContext } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
-
+import HTML5Backend from 'react-dnd-html5-backend'
+import { DragDropContext } from 'react-dnd'
 import Biblio from '../components/biblio.component'
 import * as WorkActions from '../actions/work.actions'
 
@@ -28,4 +26,4 @@ const BiblioContainer = connect(
   mapDispatchToProps
 )(Biblio)
 
-export default DragDropContext(HTML5Backend)(BiblioContainer);
+export default DragDropContext(HTML5Backend)(BiblioContainer)
