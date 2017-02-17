@@ -1,8 +1,7 @@
 import React from 'react';
 import WorkContainer from '../../containers/work.container';
-// import WorkPlaceholder from '../works/workPlaceholder.component'
 
-export default class ShelfList extends React.Component {
+class ShelfList extends React.Component {
   constructor(props) {
     super(props);
     this.setPlaceholder = this.setPlaceholder.bind(this);
@@ -33,6 +32,7 @@ export default class ShelfList extends React.Component {
           moveWork={moveWork}
           shelfNumber={shelfNumber}
           work={work}
+          currentPlaceholder={placeholderIndex}
           setPlaceholder={setPlaceholder}
         />
       );
@@ -62,3 +62,5 @@ ShelfList.propTypes = {
   shelfNumber: React.PropTypes.number.isRequired,
   moveWork: React.PropTypes.func,
 };
+
+export default ShelfList

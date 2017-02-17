@@ -13,7 +13,7 @@ class Work extends React.Component {
   render() {
     const { id, title, author, connectDragSource, connectDropTarget } = this.props;
 
-    return connectDragSource(connectDropTarget(
+    return connectDropTarget(connectDragSource(
       <div
         className="bb-work"
         id={id}
@@ -41,9 +41,11 @@ Work.propTypes = {
   title: React.PropTypes.string.isRequired,
   author: React.PropTypes.string.isRequired,
   shelfNumber: React.PropTypes.number.isRequired,
+  currentPlaceholder: React.PropTypes.number,
   setPlaceholder: React.PropTypes.func,
   connectDragSource: React.PropTypes.func,
   connectDropTarget: React.PropTypes.func,
+  moveWork: React.PropTypes.func,
   deleteWork: React.PropTypes.func,
 };
 
@@ -56,13 +58,15 @@ const workDragSource = {
     };
   },
 
-  endDrag: function(props) {
+  endDrag: function(props, monitor) {
     props.setPlaceholder(-1, -1, '');
+    const item = monitor.getItem();
+    props.moveWork(item.shelfId, item.position, props.shelfNumber, props.currentPlaceholder);
   },
 };
 
 const workDropTarget = {
-  hover: function hover(props, monitor, component) {
+  hover: function(props, monitor, component) {
     const item = monitor.getItem();
     const draggedPosition = item.position;
     const hoverPosition = props.position;
@@ -84,14 +88,14 @@ const workDropTarget = {
 };
 
 export default flow(
+  DropTarget(DRAG_WORK, workDropTarget, function(connect) {
+    return {
+      connectDropTarget: connect.dropTarget(),
+    };
+  }),
   DragSource(DRAG_WORK, workDragSource, function(connect) {
     return {
       connectDragSource: connect.dragSource(),
     };
   }),
-  DropTarget(DRAG_WORK, workDropTarget, function(connect) {
-    return {
-      connectDropTarget: connect.dropTarget(),
-    };
-  })
 )(Work);
